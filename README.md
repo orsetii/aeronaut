@@ -1,4 +1,10 @@
-# Aeronaut Command and Control
+# Aeronaut Command and Control GUI
+
+
+Make a C++ Api that can feed back serialized data, depending on what they call via a loop function.
+
+The loop function should take a flag(s), which determines what data is sent back.
+
 
 ## TODO
 
