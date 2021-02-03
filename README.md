@@ -1,4 +1,4 @@
-# Aeronaut Command and Control GUI
+# Aeronaut Command and Control Server & GUI
 
 
 Make a C++ Api that can feed back serialized data, depending on what they call via a loop function.
