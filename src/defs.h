@@ -1,2 +1,2 @@
-#define VERSION "0.01"
+#define VERSION "v0.01"
 #define AUTHOR "orseti"

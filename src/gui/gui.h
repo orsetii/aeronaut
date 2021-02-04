@@ -4,16 +4,32 @@
 //#include "imgui_impl_glfw.h"
 //#include "imgui_impl_opengl3.h"
 
-#include "../imgui/imgui.h"
-#include "../imgui/imgui_impl_sdl.h"
-#include "../imgui/imgui_impl_opengl3.h"
+#include "../../imgui/imgui.h"
+#include "../../imgui/imgui_impl_sdl.h"
+#include "../../imgui/imgui_impl_opengl3.h"
 #include <stdio.h>
 #include <SDL2/SDL.h>
-#include "aerogui.h"
+#include "../defs.h"
 #include "imgui-style.h"
 #include <string>
 #include <iostream>
 
+
+
+class Gui {
+
+private:
+	int width, height;
+
+public:
+
+	Gui(int w, int h);
+
+	int Run();
+
+};
+
+#endif
 
 #if defined(IMGUI_IMPL_OPENGL_LOADER_GL3W)
 #include <GL/gl3w.h>            // Initialize with gl3wInit()
@@ -35,20 +51,4 @@ using namespace gl;
 using namespace gl;
 #else
 #include IMGUI_IMPL_OPENGL_LOADER_CUSTOM
-#endif
-
-class Gui {
-
-private:
-	int width, height;
-
-public:
-
-	Gui(int w, int h);
-
-	int Run();
-
-};
-
-
 #endif
