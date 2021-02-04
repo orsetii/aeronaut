@@ -11,7 +11,10 @@ int main(int argc, char** argv) {
 
 
 	// Server Thread goes here..
-	// Server Init function should return a *queue, 
+	// Server Init function should return a two queues(?)
+	// one for overall state
+	// one for a stream of data from the agents (should this be some other data structure)
+	//
 	// and we then pass a pointer to that to the GUI thread.
 	//
 	// That queue should be updated with serialized data,
