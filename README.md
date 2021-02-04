@@ -1,9 +1,9 @@
 # Aeronaut Command and Control Server & GUI
 
 
-Make a C++ Api that can feed back serialized data, depending on what they call via a loop function.
+Roadmap/ implementation details can be found in code comments of server.h and main.cpp
 
-The loop function should take a flag(s), which determines what data is sent back.
+TODO https://dens.website/tutorials/cpp-asio/error-handling
 
 
 ## TODO
