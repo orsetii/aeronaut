@@ -57,7 +57,7 @@ int Gui::Run() {
 	);
 
 	SDL_Window *window = SDL_CreateWindow(
-		"Aeronaut C2 Server GUI" VERSION,
+		"Aeronaut C2 Server GUI v" VERSION,
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
 		width,

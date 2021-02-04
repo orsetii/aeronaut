@@ -1,9 +1,10 @@
 CXX = g++
 
+AEROGUI_DIR=./gui
 BUILD_DIR = ./build
-EXE = aerogui
+EXE = aeroserver
 IMGUI_DIR =  ../imgui
-SOURCES = main.cpp gui.cpp
+SOURCES = main.cpp $(AEROGUI_DIR)/gui.cpp
 SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
 SOURCES += $(IMGUI_DIR)/backends/imgui_impl_sdl.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl3.cpp
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
@@ -76,6 +77,8 @@ endif
 
 %.o:%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
+%.o:$(AEROGUI_DIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.o:$(IMGUI_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
@@ -89,13 +92,20 @@ endif
 %.o:$(IMGUI_DIR)/libs/glad/src/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-all: $(EXE)
+all: $(EXE) 
 
 $(EXE): $(OBJS)
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(LIBS)
+	$(MAKE) clean
+
 
 clean:
-	rm -f $(EXE) $(OBJS) 
-
+	$(MAKE) clean-objs
+clean-all:
+	$(MAKE) clean-objs clean-exe
+clean-objs:
+	rm -rf $(OBJS)
+clean-exe:
+	rm -rf $(EXE)
 flush:
 	rm imgui.ini
