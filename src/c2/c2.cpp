@@ -20,19 +20,12 @@ mime_type(beast::string_view path)
     if(iequals(ext, ".js"))   return "application/javascript";
     if(iequals(ext, ".json")) return "application/json";
     if(iequals(ext, ".xml"))  return "application/xml";
-    if(iequals(ext, ".swf"))  return "application/x-shockwave-flash";
-    if(iequals(ext, ".flv"))  return "video/x-flv";
     if(iequals(ext, ".png"))  return "image/png";
-    if(iequals(ext, ".jpe"))  return "image/jpeg";
     if(iequals(ext, ".jpeg")) return "image/jpeg";
     if(iequals(ext, ".jpg"))  return "image/jpeg";
     if(iequals(ext, ".gif"))  return "image/gif";
-    if(iequals(ext, ".bmp"))  return "image/bmp";
-    if(iequals(ext, ".ico"))  return "image/vnd.microsoft.icon";
-    if(iequals(ext, ".tiff")) return "image/tiff";
     if(iequals(ext, ".tif"))  return "image/tiff";
     if(iequals(ext, ".svg"))  return "image/svg+xml";
-    if(iequals(ext, ".svgz")) return "image/svg+xml";
     return "application/text";
 }
 
@@ -42,8 +35,9 @@ std::string path_cat(
     beast::string_view base,
     beast::string_view path)
 {
-    if(base.empty())
+    if(base.empty()) {
         return std::string(path);
+    }
     std::string result(base);
 #ifdef BOOST_MSVC
     char constexpr path_separator = '\\';
@@ -67,17 +61,14 @@ std::string path_cat(
 // contents of the request, so the interface requires the
 // caller to pass a generic lambda for receiving the response.
 template<class Body, class Allocator, class Send>
-void handle_request(
-    beast::string_view doc_root,
-    http::request<Body, http::basic_fields<Allocator>>&& req,
-    Send&& send)
+void handle_request(beast::string_view doc_root, http::request<Body, http::basic_fields<Allocator>>&& req, Send&& send)
 {
     // Returns a bad request response
     auto const bad_request =
     [&req](beast::string_view why)
     {
         http::response<http::string_body> res{http::status::bad_request, req.version()};
-        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+        res.set(http::field::server, FULLNAME);
         res.set(http::field::content_type, "text/html");
         res.keep_alive(req.keep_alive());
         res.body() = std::string(why);
@@ -90,7 +81,7 @@ void handle_request(
     [&req](beast::string_view target)
     {
         http::response<http::string_body> res{http::status::not_found, req.version()};
-        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+        res.set(http::field::server, FULLNAME);
         res.set(http::field::content_type, "text/html");
         res.keep_alive(req.keep_alive());
         res.body() = "The resource '" + std::string(target) + "' was not found.";
@@ -103,13 +94,14 @@ void handle_request(
     [&req](beast::string_view what)
     {
         http::response<http::string_body> res{http::status::internal_server_error, req.version()};
-        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+        res.set(http::field::server, FULLNAME);
         res.set(http::field::content_type, "text/html");
         res.keep_alive(req.keep_alive());
         res.body() = "An error occurred: '" + std::string(what) + "'";
         res.prepare_payload();
         return res;
     };
+    std::cout << req.body();
 
     // Make sure we can handle the method
     if( req.method() != http::verb::get &&
@@ -127,6 +119,23 @@ void handle_request(
     if(req.target().back() == '/')
         path.append("index.html");
 
+    // This server should function fine as a normal web server,
+    // which is good as we disguise!
+    // The below line extracts params, and we then pass that
+    // to a function that checks that, and deals with that 
+    // appropriately
+    {
+	    std::string url(req.target());
+	    if(size_t pos = url.find("?"); pos != std::string::npos) {
+		    url = url.substr(pos+1);
+		    // TODO call parameter parse function.
+		    // This NEEDS to be synchronous,
+		    // wait for the parsing, and the appropriate response to send back
+		    //
+	    } else {
+		    // No parameters found, serve request as if it were a normal server
+	    }
+    }
     // Attempt to open the file
     beast::error_code ec;
     http::file_body::value_type body;
@@ -147,7 +156,7 @@ void handle_request(
     if(req.method() == http::verb::head)
     {
         http::response<http::empty_body> res{http::status::ok, req.version()};
-        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+        res.set(http::field::server, FULLNAME);
         res.set(http::field::content_type, mime_type(path));
         res.content_length(size);
         res.keep_alive(req.keep_alive());
@@ -159,7 +168,7 @@ void handle_request(
         std::piecewise_construct,
         std::make_tuple(std::move(body)),
         std::make_tuple(http::status::ok, req.version())};
-    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+    res.set(http::field::server, FULLNAME);
     res.set(http::field::content_type, mime_type(path));
     res.content_length(size);
     res.keep_alive(req.keep_alive());
@@ -417,6 +426,8 @@ private:
 // Then a port as an int
 // Then a path to host the server's root at.
 // Then the amount of threads to run the server on, defaulting to MAX_THREADS / 2
+// TODO this should be in 'Server' class, and the rest of this file in its own
+//
 int ServerRun(std::string address_str, int port_int, std::string doc_root_str)
 {
 	// Check command line arguments.
@@ -429,15 +440,15 @@ int ServerRun(std::string address_str, int port_int, std::string doc_root_str)
 
 	// Create and launch a listening port
 	std::make_shared<listener>(
-	ioc,
-	tcp::endpoint{address, port},
-	doc_root)->run();
+		ioc,
+		tcp::endpoint{address, port},
+		doc_root)->run();
 
 	// Run the I/O service on the requested number of threads
 	std::vector<std::thread> v;
 	v.reserve(threads - 1);
 	std::cout << 
-		"Server starting on " <<
+		"Server starting on http://" <<
 		address_str <<
 		":" << port
 		<< std::endl;
