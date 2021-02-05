@@ -1,2 +1,2 @@
 all:
-	g++ -g sock.cpp -o sock.out -pthread
+	g++ -g c2.cpp -o sock.out -std=c++11 -pthread

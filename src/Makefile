@@ -1,10 +1,11 @@
 CXX = g++
 
+AEROSERVER_DIR=./c2
 AEROGUI_DIR=./gui
 BUILD_DIR = ./build
 EXE = aeroserver
-IMGUI_DIR =  ../imgui
-SOURCES = main.cpp $(AEROGUI_DIR)/gui.cpp
+IMGUI_DIR =  ../include/imgui
+SOURCES = main.cpp $(AEROGUI_DIR)/gui.cpp $(AEROSERVER_DIR)/c2.cpp
 SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
 SOURCES += $(IMGUI_DIR)/backends/imgui_impl_sdl.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl3.cpp
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
@@ -76,6 +77,8 @@ endif
 ##---------------------------------------------------------------------
 
 %.o:%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+%.o:$(AEROSERVER_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 %.o:$(AEROGUI_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<

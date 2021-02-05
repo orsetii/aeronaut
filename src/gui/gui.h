@@ -4,9 +4,9 @@
 //#include "imgui_impl_glfw.h"
 //#include "imgui_impl_opengl3.h"
 
-#include "../../imgui/imgui.h"
-#include "../../imgui/imgui_impl_sdl.h"
-#include "../../imgui/imgui_impl_opengl3.h"
+#include "../../include/imgui/imgui.h"
+#include "../../include/imgui/imgui_impl_sdl.h"
+#include "../../include/imgui/imgui_impl_opengl3.h"
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include "../defs.h"

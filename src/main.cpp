@@ -10,36 +10,20 @@ int main(int argc, char** argv) {
 
 
 
-	// Server Thread goes here..
-	// Server Init function should return a two queues(?)
-	// one for overall state
-	// one for a stream of data from the agents (should this be some other data structure)
-	//
-	// and we then pass a pointer to that to the GUI thread.
-	//
-	// That queue should be updated with serialized data,
-	// and the GUI should process that frontend as it pleases.
-	
+	// Server Thread
+	auto ServerExit = std::async(std::launch::async, ServerRun, "0.0.0.0", 8080, ".");
+
 	Gui gui(1280, 960);
-
 	// Gui Thread
+	// atm the GUI exiting exits the entire process. This could be changed? not sure.
 	std::future<int> ret = std::async(&Gui::Run, &gui);
-
-	
-
-
-
-
-
 
 	int err = ret.get();
 	if (err) {
-		
 		printf("Error in GUI. Exiting with status code %d", err);
-		return err;
+		exit(err);
+	} else {
+		// Close all threads.
+		exit(0);
 	}
-
-
-
-	return 0;
 }

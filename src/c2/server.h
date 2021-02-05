@@ -1,7 +1,25 @@
 #ifndef C2_H
 #define C2_H
 #include "../defs.h"
+#include <boost/beast/core.hpp>
+#include <boost/beast/http.hpp>
+#include <boost/beast/version.hpp>
+#include <boost/asio/dispatch.hpp>
+#include <boost/asio/strand.hpp>
+#include <boost/config.hpp>
+#include <algorithm>
+#include <cstdlib>
+#include <functional>
+#include <iostream>
+#include <memory>
+#include <string>
+#include <thread>
+#include <vector>
 
+namespace beast = boost::beast;         // from <boost/beast.hpp>
+namespace http = beast::http;           // from <boost/beast/http.hpp>
+namespace net = boost::asio;            // from <boost/asio.hpp>
+using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 // Include some libraries for networking maybe?
 
 class server {
@@ -29,6 +47,8 @@ class server {
 
 };
 
+
+int ServerRun(std::string address_str, int port_int, std::string doc_root_str);
 
 
 // ...
