@@ -11,6 +11,8 @@ SOURCES += $(IMGUI_DIR)/backends/imgui_impl_sdl.cpp $(IMGUI_DIR)/backends/imgui_
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 UNAME_S := $(shell uname -s)
 
+# TODO make two seperate CXXFLAGS for imgui and for other files
+
 CXXFLAGS = -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends
 CXXFLAGS += -g -Wall -Wformat
 LIBS =
@@ -92,6 +94,7 @@ endif
 %.o:$(IMGUI_DIR)/libs/gl3w/GL/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+
 %.o:$(IMGUI_DIR)/libs/glad/src/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
@@ -101,6 +104,8 @@ $(EXE): $(OBJS)
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(LIBS)
 	$(MAKE) clean
 
+fmt:
+	indent -linux -bap */*.cpp
 
 clean:
 	$(MAKE) clean-objs
