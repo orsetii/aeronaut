@@ -3,9 +3,7 @@
 
 
 
-#define NAME "Aeronaut"
 #define VERSION "0.01"
-#define FULLNAME NAME " v" VERSION
 #define AUTHOR "orseti"
 
 
