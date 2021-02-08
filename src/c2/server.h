@@ -1,6 +1,9 @@
-#ifndef C2_H
-#define C2_H
+#pragma once
+
 #include "../defs.h"
+#include "param.h"
+#include "c2.h"
+#include "action.h"
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
@@ -56,5 +59,3 @@ int ServerRun(std::string address_str, int port_int, std::string doc_root_str);
 
 
 
-
-#endif
